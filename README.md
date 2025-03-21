@@ -107,6 +107,3 @@ MeshService.getInstance().sendMeshMessage(message);
 
 This library is distributed under the [Open] license. See the LICENSE file for more details.
 
-## Contact and Support
-
-For support, please visit the [support page](https://www.telink-semi.com/support/) or contact via email: support@telink-semi.com
