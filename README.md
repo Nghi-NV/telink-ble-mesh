@@ -1,51 +1,112 @@
+# TelinkBleMeshLib
 
+## Introduction
 
-V3.3.2 (skip V3.3.1 which only update firmware)
+TelinkBleMeshLib is an Android library for communication and management of Bluetooth Mesh devices based on the Telink platform. This library provides a complete API set to interact with Bluetooth Mesh devices, perform device provisioning, configuration, and control devices in the mesh network.
 
-1. Add support for subnet bridge in draft feature;
-2. Add support for certificate based provisioning in draft feature;
-3. Add support for multiple network key and application key in mesh info;
-4. Update local address range from 0x0100 to 0x0400.
+## Requirements
 
-----------------
+- Android SDK 23 or above (Android 6.0+)
+- Device with Bluetooth 4.0 or above support
 
-V3.3.0
+## Features
 
-1. Add DLE mode extend bearer support for sending long unsegmented mesh packet;
-2. Add selectable device scanning mode;
-3. Update color select UI in HSL mode.
+- Scan and connect to Bluetooth Mesh devices
+- Device provisioning
+- Mesh network management
+- Mesh device configuration
+- Control devices through Mesh messages
+- Support for Bluetooth SIG standard models
+- End-to-end encryption and security according to Mesh standards
 
-----------------
+## Library Structure
 
-V3.2.3
+The library is organized into the following main packages:
 
-SIG mesh android app V3.2.3 release notes:
-1. Add startGattConnection interface in MeshService for connect target mesh node, connection state will be uploaded by GattConnectionEvent
-2. Add pid info  before OTA/MeshOTA;
+- `com.telink.ble.mesh.core`: Provides core Bluetooth Mesh functionality
+- `com.telink.ble.mesh.entity`: Data objects and models
+- `com.telink.ble.mesh.foundation`: Basic and foundation classes
+- `com.telink.ble.mesh.util`: Utilities and support tools
 
-----------------
+## Installation
 
-V3.2.2
+Add JitPack repository to your project-level build.gradle file:
 
-1. fix device provision timeout failure if device static-oob data not found when device support static-oob
-2. fix app key binding failure when target vendor model does not support app key encryption
-3. update json storage format
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
 
-----------------
+Add the library to your module's build.gradle file:
 
-V3.2.1
-1. support static oob database importing;
-2. delete mesh OTA and remote provision;
+```gradle
+dependencies {
+    implementation 'com.github.telink-semi:telink-ble-mesh:3.3.2'
+}
+```
 
-----------------
+## Usage
 
-V3.2.0
+### Library Initialization
 
-1. Switch from c-lib edition to java-source edition;
-2. Update firmware-update flow according to R04-LBL35 version;
-3. Optimize remote-provision;
-4. Change transition time from none to default when sending command;
-5. Add qrcode share by cloud.
+```java
+// Initialize in Application or main Activity
+MeshService.getInstance().init(context);
+```
 
+### Device Scanning
 
-// draft feature
+```java
+// Set up scanning callback
+MeshService.getInstance().registerMeshScannerCallback(new MeshScannerCallback() {
+    @Override
+    public void onDeviceFound(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        // Handle found device
+    }
+});
+
+// Start scanning
+MeshService.getInstance().startScan();
+```
+
+### Device Provisioning
+
+```java
+// Set up provisioning callback
+MeshService.getInstance().registerProvisioningCallback(new ProvisioningCallback() {
+    @Override
+    public void onProvisioningComplete(ProvisioningEvent event) {
+        // Handle provisioning completion
+    }
+
+    @Override
+    public void onProvisioningFailed(ProvisioningEvent event) {
+        // Handle provisioning failure
+    }
+});
+
+// Start provisioning
+ProvisioningParameters parameters = new ProvisioningParameters();
+// Set parameters
+MeshService.getInstance().startProvisioning(parameters);
+```
+
+### Sending Control Messages
+
+```java
+// Create message to control device
+MeshMessage message = OnOffSetMessage.getSimple(address, appKeyIndex, isOn, true, 0);
+MeshService.getInstance().sendMeshMessage(message);
+```
+
+## License
+
+This library is distributed under the [Open] license. See the LICENSE file for more details.
+
+## Contact and Support
+
+For support, please visit the [support page](https://www.telink-semi.com/support/) or contact via email: support@telink-semi.com
