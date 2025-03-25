@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -69,28 +70,55 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
     }
 
+    private static final String[] BLUETOOTH_PERMISSIONS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ?
+            new String[]{
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_ADVERTISE
+            } :
+            new String[]{
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN
+            };
+
+    private static final String[] LOCATION_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
         if (settingDialog != null) {
             settingDialog.dismiss();
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (hasPermissions(BLUETOOTH_PERMISSIONS) && hasPermissions(LOCATION_PERMISSIONS)) {
             onPermissionChecked();
         } else {
             ActivityCompat.requestPermissions(
                     this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA
-                    },
+                    concatenateArrays(BLUETOOTH_PERMISSIONS, LOCATION_PERMISSIONS),
                     PERMISSIONS_REQUEST_ALL
             );
         }
     }
+
+    private boolean hasPermissions(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String[] concatenateArrays(String[] first, String[] second) {
+        String[] result = new String[first.length + second.length];
+        System.arraycopy(first, 0, result, 0, first.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
+    }
+
 
     private void onPermissionChecked() {
         MeshLogger.log("permission check pass");
@@ -151,12 +179,12 @@ public class SplashActivity extends BaseActivity {
             }
             onPermissionChecked();
 
-//            if (pass) {
-//                onPermissionChecked();
-//            } else {
-//                onPermissionDenied();
-//                toastMsg("Permission Denied");
-//            }
+            if (pass) {
+                onPermissionChecked();
+            } else {
+                onPermissionDenied();
+                toastMsg("Permission Denied");
+            }
         }
     }
 

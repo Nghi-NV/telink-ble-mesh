@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 34
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.telink.ble.mesh.demo"
         minSdkVersion 24
-        targetSdkVersion 34
-        versionCode 3
-        versionName "3.3.2"
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,8 +31,10 @@ dependencies {
 //    implementation 'androidx.appcompat:appcompat:1.0.2'
 
     // TelinkBleMeshLib
-    implementation project(':TelinkBleMeshLib')
-//    implementation 'com.github.Nghi-NV:telink-ble-mesh-lib:v1.0.0'
+//    implementation project(':TelinkBleMeshLib')
+    implementation 'com.github.Nghi-NV:telink-ble-mesh-lib:v1.1.1'
+    implementation "com.madgag.spongycastle:core:1.58.0.0"
+    implementation "com.madgag.spongycastle:prov:1.58.0.0"
 //    implementation project(':TelinkFileSelector')
     implementation 'com.google.android.material:material:1.4.0'
 
